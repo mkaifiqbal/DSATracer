@@ -2,46 +2,44 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
+// Use the Environment Variable we set in Render, or fallback to localhost
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
 // Trigger Google Login
-// Access via: http://localhost:5000/api/auth/google
 router.get('/google', passport.authenticate('google', { 
     scope: ['profile', 'email'],
-    prompt: 'select_account' // Optional: Forces account selection
+    prompt: 'select_account'
 }));
 
 // Google Callback
-// Access via: http://localhost:5000/api/auth/google/callback
 router.get('/google/callback', 
   passport.authenticate('google', { 
-      // Change this to your frontend URL to avoid "Cannot GET /login" on failure
-      failureRedirect: 'http://localhost:5173' 
+      // Redirect to the correct frontend (Vercel or Local) on failure
+      failureRedirect: CLIENT_URL
   }),
   (req, res) => {
-    // Successful authentication, redirect to frontend dashboard
-    res.redirect('http://localhost:5173'); 
+    // Successful authentication, redirect to the correct frontend
+    res.redirect(CLIENT_URL); 
   }
 );
-
-// Get Current User (Frontend calls this to check if logged in)
-router.get('/current_user', (req, res) => {
-  // If user is logged in, passport attaches it to req.user
-  res.send(req.user || null);
-});
 
 // Logout
 router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) return res.status(500).send(err);
-    res.redirect('http://localhost:5173');
+    // Redirect to the correct frontend after logout
+    res.redirect(CLIENT_URL);
   });
 });
 
-// backend/routes/authRoutes.js
+// Get Current User (Fixed: Explicitly returns null JSON to prevent crashes)
 router.get('/current_user', (req, res) => {
   if (req.user) {
-    res.status(200).json(req.user); // Send user object if logged in
+    res.status(200).json(req.user);
   } else {
-    res.status(200).json(null); // Explicitly send null as JSON for Guests
+    // This fixes the "Unexpected end of JSON input" error
+    res.status(200).json(null); 
   }
 });
+
 module.exports = router;
