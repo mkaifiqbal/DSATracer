@@ -14,8 +14,12 @@ const app = express();
 
 // 1. Unified CORS Configuration
 // Allows credentials (cookies) to be sent between Frontend (5173) and Backend (5000)
+// 1. Unified CORS Configuration
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",                 // For Local Development
+        "https://dsa-tracer.vercel.app"          // For Vercel Production
+    ],
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "admin-email"]
