@@ -5,10 +5,16 @@ const User = require('../models/User');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/api/auth/google/callback"
+    // FIX 1: Use absolute URL in production to force HTTPS matches Google Console
+    callbackURL: process.env.NODE_ENV === 'production' 
+      ? 'https://dsatracer.onrender.com/api/auth/google/callback' 
+      : '/api/auth/google/callback',
+    // FIX 2: Trust Render's proxy so it knows we are secure (https)
+    proxy: true 
   },
   async (accessToken, refreshToken, profile, done) => {
-    const MASTER_ADMIN = "your-email@gmail.com"; // Your actual email
+    // You can also move this to .env if you want to change admins easily
+    const MASTER_ADMIN = "mkaifiqbal786@gmail.com"; 
     const email = profile.emails[0].value;
 
     try {
@@ -18,7 +24,7 @@ passport.use(new GoogleStrategy({
           name: profile.displayName,
           email: email,
           profilePic: profile.photos[0].value,
-          role: email === MASTER_ADMIN ? 'admin' : 'student' // Auto-promote admin
+          role: email === MASTER_ADMIN ? 'admin' : 'student'
         });
         await user.save();
       }
