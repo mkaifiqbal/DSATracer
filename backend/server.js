@@ -15,7 +15,7 @@ const app = express();
 // 1. Unified CORS Configuration
 // Allows credentials (cookies) to be sent between Frontend (5173) and Backend (5000)
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "admin-email"]
@@ -52,6 +52,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 // 5. Registered Routes
 // Ensure these match your file structure for VizNest and DSA Tracer projects
+app.get('/', (req, res) => {
+    res.send("API is running successfully...");
+});
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/questions', require('./routes/questionRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
