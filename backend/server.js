@@ -12,8 +12,9 @@ require('./config/passport'); // Handled by Google OAuth strategy
 
 const app = express();
 
-// 1. Unified CORS Configuration
-// Allows credentials (cookies) to be sent between Frontend (5173) and Backend (5000)
+// Required for Render/Vercel to handle cookies correctly behind a proxy
+app.set("trust proxy", 1);
+
 // 1. Unified CORS Configuration
 app.use(cors({
     origin: [
@@ -27,7 +28,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// 2. Unified Session Configuration
+// 2. Unified Session Configuration (FIXED FOR DEPLOYMENT)
 // Must be defined BEFORE Passport session initialization
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secret_key_for_dsa_tracer',
@@ -35,7 +36,10 @@ app.use(session({
     saveUninitialized: false, 
     cookie: {
         httpOnly: true,
-        secure: false, // Set to true if using HTTPS in production
+        // FIX: Secure must be TRUE in production (HTTPS) but FALSE locally
+        secure: process.env.NODE_ENV === "production", 
+        // FIX: SameSite must be 'none' to allow Vercel to talk to Render
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 Hours
     }
 }));
@@ -55,7 +59,6 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.log('Connection Error:', err));
 
 // 5. Registered Routes
-// Ensure these match your file structure for VizNest and DSA Tracer projects
 app.get('/', (req, res) => {
     res.send("API is running successfully...");
 });
