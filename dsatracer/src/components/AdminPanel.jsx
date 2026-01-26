@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import config from "../config";
 import { 
   LayoutDashboard, BookOpen, Coffee, PlusCircle, 
   Users, Trash2, Pencil, Search, ArrowLeft, LogOut 
@@ -20,7 +21,7 @@ const AdminPanel = ({ questions, setQuestions, user }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/admin/stats', {
+        const res = await fetch('${config.API_BASE_URL}/api/admin/stats', {
           headers: { 'admin-email': user.email }
         });
         if (res.ok) setStats(await res.json());
@@ -57,7 +58,7 @@ const AdminPanel = ({ questions, setQuestions, user }) => {
     
     setQuestions(questions.filter(q => q._id !== id));
 
-    await fetch(`http://localhost:5000/api/questions/${id}`, { 
+    await fetch(`${config.API_BASE_URL}/api/questions/${id}`, { 
         method: 'DELETE',
         headers: { 'admin-email': user.email }
     });
@@ -67,8 +68,8 @@ const AdminPanel = ({ questions, setQuestions, user }) => {
     e.preventDefault();
     try {
       const url = editingId 
-        ? `http://localhost:5000/api/questions/${editingId}` 
-        : 'http://localhost:5000/api/questions';
+        ? `${config.API_BASE_URL}/api/questions/${editingId}` 
+        : `${config.API_BASE_URL}/api/questions`;
       
       const method = editingId ? 'PUT' : 'POST';
 

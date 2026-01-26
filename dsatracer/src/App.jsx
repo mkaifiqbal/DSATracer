@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Search, Flame, Calendar, Tag, ChevronDown, ArrowDownToLine, Layers, Clock } from 'lucide-react';
-
+import config from './config';
 import AdminPanel from './components/AdminPanel';
 import LoginModal from './components/LoginModal';
 import Sidebar from './components/Sidebar';
@@ -182,7 +182,7 @@ const App = () => {
   useEffect(() => {
     const checkUserSession = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/current_user', { credentials: 'include' });
+        const res = await fetch(`${config.API_BASE_URL}/api/auth/current_user`, { credentials: 'include' });
         if (res.ok && res.status !== 204) {
           const data = await res.json();
           if (data?.email) setUser(data);
@@ -192,7 +192,7 @@ const App = () => {
 
     const fetchQuestions = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/questions');
+        const res = await fetch(`${config.API_BASE_URL}/api/questions`);
         const data = await res.json();
         setQuestions(data);
       } catch (error) { console.error("Fetch failed:", error); }
@@ -219,8 +219,8 @@ const App = () => {
     }
   }, [user, questions.length]);
 
-  const handleLogout = () => { window.location.href = "http://localhost:5000/api/auth/logout"; };
-  const handleGoogleLogin = () => { window.location.href = "http://localhost:5000/api/auth/google"; };
+  const handleLogout = () => { window.location.href = `${config.API_BASE_URL}/api/auth/logout`; };
+  const handleGoogleLogin = () => { window.location.href = `${config.API_BASE_URL}/api/auth/google`; };
   
   // --- TOGGLE FUNCTION ---
   const toggleQuestion = async (id) => {
@@ -239,7 +239,7 @@ const App = () => {
 
     // 2. LOGGED IN MODE
     try {
-      const response = await fetch('http://localhost:5000/api/users/toggle-question', {
+      const response = await fetch(`${config.API_BASE_URL}/api/users/toggle-question`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, questionId: id })

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, User, LogIn, Bell, LogOut, Pencil, ChevronDown, Check, X } from 'lucide-react';
+import config from "../config";
 
 const Navbar = ({ user, setUser, onLoginClick, onMenuClick, onLogout }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,7 +19,7 @@ const Navbar = ({ user, setUser, onLoginClick, onMenuClick, onLogout }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/update-name', {
+      const response = await fetch(`${config.API_BASE_URL}/api/users/update-name`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, name: newName.trim() })
