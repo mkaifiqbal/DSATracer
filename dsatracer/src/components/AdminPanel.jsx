@@ -21,7 +21,7 @@ const AdminPanel = ({ questions, setQuestions, user }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('${config.API_BASE_URL}/api/admin/stats', {
+        const res = await fetch(`${config.API_BASE_URL}/api/admin/stats`, {
           headers: { 'admin-email': user.email }
         });
         if (res.ok) setStats(await res.json());
