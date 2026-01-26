@@ -5,15 +5,15 @@ const User = require('../models/User');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    // FIX 1: Use absolute URL in production to force HTTPS matches Google Console
+    // FIX: Send users to VERCEL (the frontend), not Render (the backend).
+    // This ensures the Login Cookie is saved on the correct website.
     callbackURL: process.env.NODE_ENV === 'production' 
-      ? 'https://dsatracer.onrender.com/api/auth/google/callback' 
+      ? 'https://dsa-tracer.vercel.app/api/auth/google/callback' 
       : '/api/auth/google/callback',
-    // FIX 2: Trust Render's proxy so it knows we are secure (https)
     proxy: true 
   },
   async (accessToken, refreshToken, profile, done) => {
-    // You can also move this to .env if you want to change admins easily
+    // Your Admin Logic (Preserved)
     const MASTER_ADMIN = "mkaifiqbal786@gmail.com"; 
     const email = profile.emails[0].value;
 
