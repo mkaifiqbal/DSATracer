@@ -1,286 +1,176 @@
 const mongoose = require('mongoose');
-const Question = require('./models/Question'); 
-require('dotenv').config(); 
+const Question = require('./models/Question'); // Ensure path is correct
+require('dotenv').config();
 
-// 1. YOUR PRACTICE DATA
-const practiceData = [
+// 1. DATA WITH FIXED LINKS (I removed "description/" manually for you)
+const questionsData = [
   {
-    "title": "Two Sum - Unsorted",
-    "link": "https://leetcode.com/problems/two-sum/",
-    "ansLink": "",
-    "topic": "Two Sum"
+    "title": "925. Long Pressed Name",
+    "link": "https://leetcode.com/problems/long-pressed-name/",
+    "isPractice": false
   },
   {
-    "title": "Two Sum - Sorted (IB)",
-    "link": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
-    "ansLink": "",
-    "topic": "Two Sum"
+    "title": "169. Majority Element",
+    "link": "https://leetcode.com/problems/majority-element/",
+    "isPractice": false
   },
   {
-    "title": "Two Sum - Closest",
-    "link": "https://www.geeksforgeeks.org/given-sorted-array-number-x-find-pair-array-whose-sum-closest-x/",
-    "ansLink": "",
-    "topic": "Two Sum"
+    "title": "238. Product of Array Except Self",
+    "link": "https://leetcode.com/problems/product-of-array-except-self/",
+    "isPractice": false
   },
   {
-    "title": "Target Sum Pairs - Unique",
-    "link": "https://leetcode.com/problems/two-sum/",
-    "ansLink": "",
-    "topic": "Two Sum"
+    "title": "915. Partition Array into Disjoint Intervals",
+    "link": "https://leetcode.com/problems/partition-array-into-disjoint-intervals/",
+    "isPractice": false
   },
   {
-    "title": "Count Pairs <= K Sum",
-    "link": "https://www.geeksforgeeks.org/count-pairs-array-whose-sum-less-x/",
-    "ansLink": "",
-    "topic": "Two Sum"
-  },
-  {
-    "title": "Two Sum - Design",
-    "link": "https://leetcode.com/problems/two-sum-iii-data-structure-design/",
-    "ansLink": "",
-    "topic": "Two Sum"
-  },
-  {
-    "title": "Two Sum - Absolute Sorted",
-    "link": "https://www.geeksforgeeks.org/count-pairs-difference-equal-k/",
-    "ansLink": "",
-    "topic": "Two Sum"
-  },
-  {
-    "title": "Target Difference Pair",
-    "link": "https://leetcode.com/problems/k-diff-pairs-in-an-array/",
-    "ansLink": "",
-    "topic": "Difference Pair"
-  },
-  {
-    "title": "K Difference Pairs",
-    "link": "https://leetcode.com/problems/k-diff-pairs-in-an-array/",
-    "ansLink": "",
-    "topic": "Difference Pair"
-  },
-  {
-    "title": "Longest Diff Pair (IB)",
-    "link": "https://www.interviewbit.com/problems/pair-with-given-difference/",
-    "ansLink": "",
-    "topic": "Difference Pair"
-  },
-  {
-    "title": "3 Sum",
-    "link": "https://leetcode.com/problems/3sum/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "3 Sum - Smaller",
-    "link": "https://leetcode.com/problems/3sum-smaller/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "3 Sum - Closest",
-    "link": "https://leetcode.com/problems/3sum-closest/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "Count Valid Triplets",
-    "link": "https://leetcode.com/problems/valid-triangle-number/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "Max Sum Triplet",
-    "link": "https://www.geeksforgeeks.org/maximum-sum-triplet-array-j-k-ai-aj-ak/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "Minimize Differences (Arrays)",
-    "link": "https://www.geeksforgeeks.org/minimize-the-maximum-difference-between-the-heights/",
-    "ansLink": "",
-    "topic": "Three Sum"
-  },
-  {
-    "title": "4 Sum",
-    "link": "https://leetcode.com/problems/4sum/",
-    "ansLink": "",
-    "topic": "Four Sum"
-  },
-  {
-    "title": "4 Sum - II",
-    "link": "https://leetcode.com/problems/4sum-ii/",
-    "ansLink": "",
-    "topic": "Four Sum"
-  },
-  {
-    "title": "Tuples - Equal Product",
-    "link": "https://leetcode.com/problems/tuple-with-same-product/",
-    "ansLink": "",
-    "topic": "Four Sum"
-  },
-  {
-    "title": "Max Sum Subarray of Size K",
+    "title": "Max Sum Subarray of size K",
     "link": "https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
+    "isPractice": false
   },
   {
-    "title": "Distinct Nos in Every Window",
-    "link": "https://www.geeksforgeeks.org/problems/count-distinct-elements-in-every-window/1",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Min Swaps K Together",
-    "link": "https://leetcode.com/problems/minimum-swaps-to-group-all-1s-together/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "First Negative in Sliding Window",
-    "link": "https://www.geeksforgeeks.org/problems/first-negative-integer-in-every-window-of-size-k3345/1",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Check Anagram Substring",
-    "link": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Substring with Concatenations",
-    "link": "https://leetcode.com/problems/substring-with-concatenation-of-all-words/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Equivalent Subarrays",
-    "link": "https://leetcode.com/problems/count-complete-subarrays-in-an-array/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Sliding Window Maximum",
-    "link": "https://leetcode.com/problems/sliding-window-maximum/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Max Consecutive Ones III",
-    "link": "https://leetcode.com/problems/max-consecutive-ones-iii/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Minimum Window Substring",
-    "link": "https://leetcode.com/problems/minimum-window-substring/",
-    "ansLink": "",
-    "topic": "Sliding Window Technique"
-  },
-  {
-    "title": "Longest Substring w/o Repeating Char",
-    "link": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
-    "ansLink": "",
-    "topic": "Substring - Repeating Char"
-  },
-  {
-    "title": "Longest Substring - At Most K Unique",
-    "link": "https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/",
-    "ansLink": "",
-    "topic": "Substring - Repeating Char"
-  },
-  {
-    "title": "Longest Substring - At Least K Repeating",
-    "link": "https://leetcode.com/problems/longest-substring-with-at-least-k-repeating-characters/",
-    "ansLink": "",
-    "topic": "Substring - Repeating Char"
-  },
-  {
-    "title": "Count Subarrays with K Odds",
-    "link": "https://leetcode.com/problems/count-number-of-nice-subarrays/",
-    "ansLink": "",
-    "topic": "Substring - Repeating Char"
-  },
-  {
-    "title": "Longest Repeating Character Replacement",
-    "link": "https://leetcode.com/problems/longest-repeating-character-replacement/",
-    "ansLink": "",
-    "topic": "Substring - Repeating Char"
-  },
-  {
-    "title": "Smallest Subarray with Sum >= X",
+    "title": "209. Minimum Size Subarray Sum",
     "link": "https://leetcode.com/problems/minimum-size-subarray-sum/",
-    "ansLink": "",
-    "topic": "Subarray with Restriction"
+    "isPractice": false
   },
   {
-    "title": "Count Subarrays with Product < X",
-    "link": "https://leetcode.com/problems/subarray-product-less-than-k/",
-    "ansLink": "",
-    "topic": "Subarray with Restriction"
-  },
-  {
-    "title": "Count Subarrays with Max in Range",
-    "link": "https://leetcode.com/problems/number-of-subarrays-with-bounded-maximum/",
-    "ansLink": "",
-    "topic": "Subarray with Restriction"
-  },
-  {
-    "title": "Trapping Rain Water",
-    "link": "https://leetcode.com/problems/trapping-rain-water/",
-    "ansLink": "",
-    "topic": "Trapping Rain Water"
-  },
-  {
-    "title": "Container With Most Water",
-    "link": "https://leetcode.com/problems/container-with-most-water/",
-    "ansLink": "",
-    "topic": "Trapping Rain Water"
-  },
-  {
-    "title": "Boats to Save People",
+    "title": "881. Boats to Save People",
     "link": "https://leetcode.com/problems/boats-to-save-people/",
-    "ansLink": "",
-    "topic": "Trapping Rain Water"
+    "isPractice": false
   },
   {
-    "title": "Min String Deleting Ends",
+    "title": "713. Subarray Product Less Than K",
+    "link": "https://leetcode.com/problems/subarray-product-less-than-k/",
+    "isPractice": false
+  },
+  {
+    "title": "1750. Minimum Length of String After Deleting Similar Ends",
     "link": "https://leetcode.com/problems/minimum-length-of-string-after-deleting-similar-ends/",
-    "ansLink": "",
-    "topic": "Trapping Rain Water"
+    "isPractice": false
   },
   {
-    "title": "Distinct Absolute Array Elements",
-    "link": "https://www.geeksforgeeks.org/count-distinct-absolute-values-sorted-array/",
-    "ansLink": "",
-    "topic": "Trapping Rain Water"
+    "title": "Subarray with 0 sum",
+    "link": "https://www.geeksforgeeks.org/problems/subarray-with-0-sum-1587115621/1",
+    "isPractice": false
+  },
+  {
+    "title": "475. Heaters",
+    "link": "https://leetcode.com/problems/heaters/",
+    "isPractice": false
+  },
+  {
+    "title": "658. Find K Closest Elements",
+    "link": "https://leetcode.com/problems/find-k-closest-elements/",
+    "isPractice": false
+  },
+  {
+    "title": "Find the closest number",
+    "link": "https://www.geeksforgeeks.org/problems/find-the-closest-number5513/1",
+    "isPractice": false
+  },
+  {
+    "title": "367. Valid Perfect Square",
+    "link": "https://leetcode.com/problems/valid-perfect-square/",
+    "isPractice": false
+  },
+  {
+    "title": "153. Find Minimum in Rotated Sorted Array",
+    "link": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+    "isPractice": false
+  },
+  {
+    "title": "154. Find Minimum in Rotated Sorted Array II",
+    "link": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/",
+    "isPractice": false
+  },
+  {
+    "title": "74. Search a 2D Matrix",
+    "link": "https://leetcode.com/problems/search-a-2d-matrix/",
+    "isPractice": false
+  },
+  {
+    "title": "33. Search in Rotated Sorted Array",
+    "link": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+    "isPractice": false
+  },
+  {
+    "title": "852. Peak Index in a Mountain Array",
+    "link": "https://leetcode.com/problems/peak-index-in-a-mountain-array/",
+    "isPractice": false
+  },
+  {
+    "title": "540. Single Element in a Sorted Array",
+    "link": "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+    "isPractice": false
+  },
+  {
+    "title": "274. H-Index",
+    "link": "https://leetcode.com/problems/h-index/",
+    "isPractice": false
+  },
+  {
+    "title": "Allocate Minimum Pages",
+    "link": "https://www.geeksforgeeks.org/problems/allocate-minimum-number-of-pages0937/1",
+    "isPractice": false
+  },
+  {
+    "title": "410. Split Array Largest Sum",
+    "link": "https://leetcode.com/problems/split-array-largest-sum/",
+    "isPractice": false
+  },
+  {
+    "title": "The Painter's Partition Problem-II",
+    "link": "https://www.geeksforgeeks.org/problems/the-painters-partition-problem1535/1",
+    "isPractice": false
+  },
+  {
+    "title": "1011. Capacity To Ship Packages Within D Days",
+    "link": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+    "isPractice": false
+  },
+  {
+    "title": "875. Koko Eating Bananas",
+    "link": "https://leetcode.com/problems/koko-eating-bananas/",
+    "isPractice": false
+  },
+  {
+    "title": "Aggressive Cows",
+    "link": "https://www.geeksforgeeks.org/problems/aggressive-cows/1",
+    "isPractice": false
   }
 ];
 
-// 2. CONNECT AND SEED
-const seedPractice = async () => {
+const updateDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
         console.log("✅ Connected to Database...");
 
-        // Prepare data with correct flags
-        const formattedData = practiceData.map(q => ({
-            ...q,
-            isPractice: true, // Force Practice Mode
-            dateTaught: new Date() // Set today's date so they don't break sorting
-        }));
+        let count = 0;
 
-        // Insert new data (Append to existing)
-        await Question.insertMany(formattedData);
-        console.log(`🚀 Successfully added ${formattedData.length} PRACTICE questions!`);
+        // Loop through each question in the list
+        for (const q of questionsData) {
+            // Find by Title, Update the Link
+            const result = await Question.updateOne(
+                { title: q.title }, // Find matches by Title
+                { $set: { link: q.link } } // Update ONLY the link
+            );
 
+            if (result.matchedCount > 0) {
+                count++;
+                console.log(`Updated: ${q.title}`);
+            } else {
+                console.log(`⚠️ Not Found: ${q.title} (Check spelling in DB)`);
+            }
+        }
+
+        console.log(`\n🚀 Finished! Updated ${count} questions.`);
         mongoose.connection.close();
         process.exit();
     } catch (error) {
-        console.error("❌ Error seeding database:", error);
+        console.error("❌ Error updating:", error);
         process.exit(1);
     }
 };
 
-seedPractice();
+updateDB();
