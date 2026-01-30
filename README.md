@@ -42,7 +42,7 @@ Follow these steps to get a local copy up and running.
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/mkaifiqbal/DSATracer.git](https://github.com/mkaifiqbal/DSATracer.git)
+   git clone https://github.com/mkaifiqbal/DSATracer.git
    cd DSATracer
 2. **Install Dependencies:**
    ```bash
