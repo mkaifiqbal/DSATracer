@@ -18,8 +18,9 @@ app.set("trust proxy", 1);
 // 1. Unified CORS Configuration
 app.use(cors({
     origin: [
-        "http://localhost:5173",                 // For Local Development
-        "https://dsa-tracer.vercel.app"          // For Vercel Production
+        "http://localhost:5173"
+        // ,                 // For Local Development
+        // "https://dsa-tracer.vercel.app"          // For Vercel Production
     ],
     credentials: true, 
     methods: ["GET", "POST", "PUT", "DELETE"],

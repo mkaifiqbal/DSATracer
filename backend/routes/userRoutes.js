@@ -92,4 +92,31 @@ router.put('/update-name', async (req, res) => {
     }
 });
 
+/**
+ * @route   PUT /api/users/theme
+ * @desc    Update user theme preference (Dark/Light)
+ * @access  Private (Requires Login)
+ */
+router.put('/theme', async (req, res) => {
+    // 1. Check if user is logged in (Passport attaches user to req)
+    if (!req.user) {
+        return res.status(401).json({ error: "Not authorized. Please login." });
+    }
+
+    const { theme } = req.body; // "dark" or "light"
+
+    try {
+        // 2. Update the theme in database
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { theme: theme },
+            { new: true } // Return the updated user object
+        );
+        res.status(200).json(updatedUser);
+    } catch (err) {
+        console.error("Theme Update Error:", err);
+        res.status(500).json({ message: "Failed to update theme" });
+    }
+});
+
 module.exports = router;

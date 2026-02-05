@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     role: { type: String, default: 'student' },
     profilePic: { type: String },
     
-    // --- NEW FIELD ---
+    theme: { type: String, default: 'light' },
     lastActiveAt: { type: Date, default: Date.now }
 });
 
