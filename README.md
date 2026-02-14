@@ -11,7 +11,7 @@
 
 ## ✨ Features
 
-- **Problem Tracking:** Log every problem you solve with category and difficulty tags.
+- **Problem Tracking:** Log every problem you solve with category.
 - **Google Authentication:** Secure and seamless login using Google OAuth.
 - **Personalized Dashboard:** A clean UI to view your overall progress at a glance.
 - **Persistent Progress:** Data is securely stored in MongoDB Atlas, accessible from anywhere.
@@ -24,7 +24,7 @@
 - **Frontend:** React.js, Tailwind CSS, React Router DOM
 - **Backend:** Node.js, Express.js, Passport.js (Google Strategy)
 - **Database:** MongoDB Atlas
-- **Hosting:** Vercel (Frontend & Backend)
+- **Hosting:** Vercel (Frontend) & Render (Backend)
 
 ---
 
